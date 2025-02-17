@@ -89,10 +89,7 @@ class ChewieState extends State<Chewie> {
       controller: widget.controller,
       child: ChangeNotifierProvider<PlayerNotifier>.value(
         value: notifier,
-        builder: (context, w) {
-          widget.controller.setPlayer(context);
-          return const PlayerWithControls();
-        },
+        builder: (context, w) => const PlayerWithControls(),
       ),
     );
   }
@@ -135,10 +132,7 @@ class ChewieState extends State<Chewie> {
       controller: widget.controller,
       child: ChangeNotifierProvider<PlayerNotifier>.value(
         value: notifier,
-        builder: (context, w) {
-          widget.controller.setPlayer(context);
-          return const PlayerWithControls();
-        },
+        builder: (context, w) => const PlayerWithControls(),
       ),
     );
 
@@ -348,7 +342,7 @@ class ChewieController extends ChangeNotifier {
     Subtitles? subtitle,
     bool? showSubtitles,
     Widget Function(BuildContext, dynamic)? subtitleBuilder,
-    Widget? customControls,
+    Widget Function(bool)? customControls,
     WidgetBuilder? bufferingBuilder,
     Widget Function(BuildContext, String)? errorBuilder,
     bool? allowedScreenSleep,
@@ -435,9 +429,6 @@ class ChewieController extends ChangeNotifier {
   /// won't be shown.
   final bool showOptions;
 
-  bool _hideStuff = true;
-  bool get hideStuff => _hideStuff;
-
   /// Pass your translations for the options like:
   /// - PlaybackSpeed
   /// - Subtitles
@@ -507,7 +498,7 @@ class ChewieController extends ChangeNotifier {
 
   /// Defines customised controls. Check [MaterialControls] or
   /// [CupertinoControls] for reference.
-  final Widget? customControls;
+  final Widget Function(bool hideStuff)? customControls;
 
   /// When the video playback runs into an error, you can build a custom
   /// error message.
@@ -636,20 +627,6 @@ class ChewieController extends ChangeNotifier {
       enterFullScreen();
       videoPlayerController.removeListener(_fullScreenListener);
     }
-  }
-
-  void setPlayer(BuildContext context) {
-    Provider.of<PlayerNotifier>(context).addListener(
-      () => _playerListener(context),
-    );
-  }
-
-  void _playerListener(BuildContext context) {
-    if (!context.mounted) return;
-
-    final value = context.read<PlayerNotifier>();
-    _hideStuff = value.hideStuff;
-    notifyListeners();
   }
 
   void enterFullScreen() {

@@ -21,7 +21,7 @@ main() {
       videoPlayerController: videoPlayerController,
       autoPlay: false,
       looping: false,
-      customControls: MaterialControls(
+      customControls: (_) => MaterialControls(
         key: materialControlsKey,
       ),
     );
@@ -54,7 +54,7 @@ main() {
       videoPlayerController: videoPlayerController,
       autoPlay: false,
       looping: false,
-      customControls: CupertinoControls(
+      customControls: (_) => CupertinoControls(
         key: materialControlsKey,
         backgroundColor: Colors.black,
         iconColor: Colors.white,
@@ -90,7 +90,7 @@ main() {
       videoPlayerController: videoPlayerController,
       autoPlay: false,
       looping: false,
-      customControls: MaterialDesktopControls(
+      customControls: (_) => MaterialDesktopControls(
         key: materialControlsKey,
       ),
     );
