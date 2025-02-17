@@ -49,7 +49,7 @@ class ChewieState extends State<Chewie> {
   void initState() {
     super.initState();
     widget.controller.addListener(listener);
-    notifier = Provider.of<PlayerNotifier>(context, listen: false);
+    notifier = widget.controller.notifier;
   }
 
   @override
