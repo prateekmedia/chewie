@@ -90,7 +90,7 @@ class ChewieState extends State<Chewie> {
       child: ChangeNotifierProvider<PlayerNotifier>.value(
         value: notifier,
         builder: (context, w) {
-          widget.controller.setPlayer(context.read<PlayerNotifier>());
+          widget.controller.setPlayer(Provider.of<PlayerNotifier>(context));
           return const PlayerWithControls();
         },
       ),
@@ -136,7 +136,7 @@ class ChewieState extends State<Chewie> {
       child: ChangeNotifierProvider<PlayerNotifier>.value(
         value: notifier,
         builder: (context, w) {
-          widget.controller.setPlayer(context.read<PlayerNotifier>());
+          widget.controller.setPlayer(Provider.of<PlayerNotifier>(context));
           return const PlayerWithControls();
         },
       ),
