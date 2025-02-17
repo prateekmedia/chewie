@@ -445,7 +445,8 @@ class ChewieController extends ChangeNotifier {
   /// These are required for the default `OptionItem`'s
   final OptionsTranslation? optionsTranslation;
 
-  late final PlayerNotifier notifier;
+  PlayerNotifier? _notifier;
+  PlayerNotifier? get notifier => _notifier;
 
   /// Build your own options with default chewieOptions shiped through
   /// the builder method. Just add your own options to the Widget
@@ -638,7 +639,7 @@ class ChewieController extends ChangeNotifier {
   }
 
   void setPlayer(PlayerNotifier value) {
-    notifier = value;
+    _notifier = value;
     notifyListeners();
   }
 
