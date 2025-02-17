@@ -90,7 +90,7 @@ class ChewieState extends State<Chewie> {
       child: ChangeNotifierProvider<PlayerNotifier>.value(
         value: notifier,
         builder: (context, w) {
-          widget.controller.setPlayer(Provider.of<PlayerNotifier>(context));
+          widget.controller.setPlayer(context);
           return const PlayerWithControls();
         },
       ),
@@ -136,7 +136,7 @@ class ChewieState extends State<Chewie> {
       child: ChangeNotifierProvider<PlayerNotifier>.value(
         value: notifier,
         builder: (context, w) {
-          widget.controller.setPlayer(Provider.of<PlayerNotifier>(context));
+          widget.controller.setPlayer(context);
           return const PlayerWithControls();
         },
       ),
@@ -435,6 +435,9 @@ class ChewieController extends ChangeNotifier {
   /// won't be shown.
   final bool showOptions;
 
+  bool _hideStuff = true;
+  bool get hideStuff => _hideStuff;
+
   /// Pass your translations for the options like:
   /// - PlaybackSpeed
   /// - Subtitles
@@ -444,9 +447,6 @@ class ChewieController extends ChangeNotifier {
   ///
   /// These are required for the default `OptionItem`'s
   final OptionsTranslation? optionsTranslation;
-
-  PlayerNotifier? _notifier;
-  PlayerNotifier? get notifier => _notifier;
 
   /// Build your own options with default chewieOptions shiped through
   /// the builder method. Just add your own options to the Widget
@@ -638,8 +638,17 @@ class ChewieController extends ChangeNotifier {
     }
   }
 
-  void setPlayer(PlayerNotifier value) {
-    _notifier = value;
+  void setPlayer(BuildContext context) {
+    Provider.of<PlayerNotifier>(context).addListener(
+      () => _playerListener(context),
+    );
+  }
+
+  void _playerListener(BuildContext context) {
+    if (!context.mounted) return;
+
+    final value = context.read<PlayerNotifier>();
+    _hideStuff = value.hideStuff;
     notifyListeners();
   }
 
