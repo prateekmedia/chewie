@@ -90,7 +90,7 @@ class ChewieState extends State<Chewie> {
       child: ChangeNotifierProvider<PlayerNotifier>.value(
         value: notifier,
         builder: (context, w) {
-          widget.controller.notifier = context.read<PlayerNotifier>();
+          widget.controller.setPlayer(context.read<PlayerNotifier>());
           return const PlayerWithControls();
         },
       ),
@@ -136,7 +136,7 @@ class ChewieState extends State<Chewie> {
       child: ChangeNotifierProvider<PlayerNotifier>.value(
         value: notifier,
         builder: (context, w) {
-          widget.controller.notifier = context.read<PlayerNotifier>();
+          widget.controller.setPlayer(context.read<PlayerNotifier>());
           return const PlayerWithControls();
         },
       ),
@@ -635,6 +635,11 @@ class ChewieController extends ChangeNotifier {
       enterFullScreen();
       videoPlayerController.removeListener(_fullScreenListener);
     }
+  }
+
+  void setPlayer(PlayerNotifier value) {
+    notifier = value;
+    notifyListeners();
   }
 
   void enterFullScreen() {
