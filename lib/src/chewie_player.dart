@@ -439,6 +439,8 @@ class ChewieController extends ChangeNotifier {
   /// These are required for the default `OptionItem`'s
   final OptionsTranslation? optionsTranslation;
 
+  PlayerNotifier? notifier;
+
   /// Build your own options with default chewieOptions shiped through
   /// the builder method. Just add your own options to the Widget
   /// you'll build. If you want to hide the chewieOptions, just leave them

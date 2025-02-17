@@ -37,7 +37,6 @@ class CupertinoControls extends StatefulWidget {
 
 class _CupertinoControlsState extends State<CupertinoControls>
     with SingleTickerProviderStateMixin {
-  late PlayerNotifier notifier;
   late VideoPlayerValue _latestValue;
   double? _latestVolume;
   Timer? _hideTimer;
@@ -59,7 +58,6 @@ class _CupertinoControlsState extends State<CupertinoControls>
   @override
   void initState() {
     super.initState();
-    notifier = Provider.of<PlayerNotifier>(context, listen: false);
   }
 
   @override
@@ -90,7 +88,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
       child: GestureDetector(
         onTap: () => _cancelAndRestartTimer(),
         child: AbsorbPointer(
-          absorbing: notifier.hideStuff,
+          absorbing: _chewieController?.notifier?.hideStuff ?? false,
           child: Stack(
             children: [
               if (_displayBufferingIndicator)
@@ -114,7 +112,9 @@ class _CupertinoControlsState extends State<CupertinoControls>
                     Transform.translate(
                       offset: Offset(
                         0.0,
-                        notifier.hideStuff ? barHeight * 0.8 : 0.0,
+                        (_chewieController?.notifier?.hideStuff ?? false)
+                            ? barHeight * 0.8
+                            : 0.0,
                       ),
                       child: _buildSubtitles(chewieController.subtitle!),
                     ),
@@ -145,6 +145,8 @@ class _CupertinoControlsState extends State<CupertinoControls>
   void didChangeDependencies() {
     final oldController = _chewieController;
     _chewieController = ChewieController.of(context);
+    _chewieController?.notifier =
+        Provider.of<PlayerNotifier>(context, listen: false);
     controller = chewieController.videoPlayerController;
 
     if (oldController != chewieController) {
@@ -249,7 +251,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
       bottom: chewieController.isFullScreen,
       minimum: chewieController.controlsSafeAreaMinimum,
       child: AnimatedOpacity(
-        opacity: notifier.hideStuff ? 0.0 : 1.0,
+        opacity: (_chewieController?.notifier?.hideStuff ?? false) ? 0.0 : 1.0,
         duration: const Duration(milliseconds: 300),
         child: Container(
           color: Colors.transparent,
@@ -317,7 +319,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
     return GestureDetector(
       onTap: _onExpandCollapse,
       child: AnimatedOpacity(
-        opacity: notifier.hideStuff ? 0.0 : 1.0,
+        opacity: (_chewieController?.notifier?.hideStuff ?? false) ? 0.0 : 1.0,
         duration: const Duration(milliseconds: 300),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10.0),
@@ -359,7 +361,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
               _hideTimer?.cancel();
 
               setState(() {
-                notifier.hideStuff = false;
+                _chewieController?.notifier?.hideStuff = false;
               });
             },
       child: CenterPlayButton(
@@ -392,7 +394,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
         }
       },
       child: AnimatedOpacity(
-        opacity: notifier.hideStuff ? 0.0 : 1.0,
+        opacity: (_chewieController?.notifier?.hideStuff ?? false) ? 0.0 : 1.0,
         duration: const Duration(milliseconds: 300),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10.0),
@@ -634,7 +636,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
     _hideTimer?.cancel();
 
     setState(() {
-      notifier.hideStuff = false;
+      _chewieController?.notifier?.hideStuff = false;
 
       _startHideTimer();
     });
@@ -654,7 +656,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
     if (chewieController.showControlsOnInitialize) {
       _initTimer = Timer(const Duration(milliseconds: 200), () {
         setState(() {
-          notifier.hideStuff = false;
+          _chewieController?.notifier?.hideStuff = false;
         });
       });
     }
@@ -662,7 +664,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
 
   void _onExpandCollapse() {
     setState(() {
-      notifier.hideStuff = true;
+      _chewieController?.notifier?.hideStuff = true;
 
       chewieController.toggleFullScreen();
       _expandCollapseTimer = Timer(const Duration(milliseconds: 300), () {
@@ -735,7 +737,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
 
     setState(() {
       if (controller.value.isPlaying) {
-        notifier.hideStuff = false;
+        _chewieController?.notifier?.hideStuff = false;
         _hideTimer?.cancel();
         controller.pause();
       } else {
@@ -787,7 +789,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
         : chewieController.hideControlsTimer;
     _hideTimer = Timer(hideControlsTimer, () {
       setState(() {
-        notifier.hideStuff = true;
+        _chewieController?.notifier?.hideStuff = true;
       });
     });
   }
