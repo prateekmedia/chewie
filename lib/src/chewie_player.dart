@@ -49,7 +49,7 @@ class ChewieState extends State<Chewie> {
   void initState() {
     super.initState();
     widget.controller.addListener(listener);
-    notifier = widget.controller.notifier;
+    notifier = PlayerNotifier.init();
   }
 
   @override
@@ -89,7 +89,10 @@ class ChewieState extends State<Chewie> {
       controller: widget.controller,
       child: ChangeNotifierProvider<PlayerNotifier>.value(
         value: notifier,
-        builder: (context, w) => const PlayerWithControls(),
+        builder: (context, w) {
+          widget.controller.notifier = context.read<PlayerNotifier>();
+          return const PlayerWithControls();
+        },
       ),
     );
   }
@@ -132,7 +135,10 @@ class ChewieState extends State<Chewie> {
       controller: widget.controller,
       child: ChangeNotifierProvider<PlayerNotifier>.value(
         value: notifier,
-        builder: (context, w) => const PlayerWithControls(),
+        builder: (context, w) {
+          widget.controller.notifier = context.read<PlayerNotifier>();
+          return const PlayerWithControls();
+        },
       ),
     );
 
@@ -600,7 +606,6 @@ class ChewieController extends ChangeNotifier {
   bool get isPlaying => videoPlayerController.value.isPlaying;
 
   Future<dynamic> _initialize() async {
-    notifier = PlayerNotifier.init();
     await videoPlayerController.setLooping(looping);
 
     if ((autoInitialize || autoPlay) &&
