@@ -49,7 +49,7 @@ class ChewieState extends State<Chewie> {
   void initState() {
     super.initState();
     widget.controller.addListener(listener);
-    notifier = PlayerNotifier.init();
+    notifier = Provider.of<PlayerNotifier>(context, listen: false);
   }
 
   @override
@@ -439,7 +439,7 @@ class ChewieController extends ChangeNotifier {
   /// These are required for the default `OptionItem`'s
   final OptionsTranslation? optionsTranslation;
 
-  PlayerNotifier? notifier;
+  late final PlayerNotifier notifier;
 
   /// Build your own options with default chewieOptions shiped through
   /// the builder method. Just add your own options to the Widget
@@ -600,6 +600,7 @@ class ChewieController extends ChangeNotifier {
   bool get isPlaying => videoPlayerController.value.isPlaying;
 
   Future<dynamic> _initialize() async {
+    notifier = PlayerNotifier.init();
     await videoPlayerController.setLooping(looping);
 
     if ((autoInitialize || autoPlay) &&
